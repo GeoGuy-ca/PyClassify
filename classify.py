@@ -67,25 +67,25 @@ class MyApp(QtGui.QMainWindow, Ui_MainWindow):
         if  filePath[-28:-25] == 'LC8':
             platform = Sensor.LANDSAT_8
             data_set = gdal.Open(str(filePath[:-6] + 'B1.TIF'), GA_ReadOnly)
-            band1 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B2.TIF'), GA_ReadOnly)
-            band2 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band2 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B3.TIF'), GA_ReadOnly)
-            band3 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band3 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B4.TIF'), GA_ReadOnly)
-            band4 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band4 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B5.TIF'), GA_ReadOnly)
-            band5 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band5 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B6.TIF'), GA_ReadOnly)
-            band6 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band6 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B7.TIF'), GA_ReadOnly)
-            band7 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band7 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B9.TIF'), GA_ReadOnly)
-            band9 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band9 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B10.TIF'), GA_ReadOnly)
-            band10 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band10 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
             data_set = gdal.Open(str(filePath[:-6] + 'B11.TIF'), GA_ReadOnly)
-            band11 = np.array(data_set.GetRasterBand(1).ReadAsArray())
+            band11 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.int16)
         else:
             print 'only LC8 currently supported!'
         self.file_path.setText(filePath)
@@ -100,15 +100,22 @@ class MyApp(QtGui.QMainWindow, Ui_MainWindow):
         global result
         global stream
         global preGPU
+        global x_size
+        global y_size
+        result = np.ndarray([y_size, x_size], dtype=np.int64)
         if len(preGPU.shape) == 3:
-            dev_result = cuda.device_array_like(preGPU[:, :, 0], stream=stream)
+            dev_result = cuda.device_array([y_size, x_size], dtype=np.int64, stream=stream)
         else:
             dev_result = cuda.device_array_like(preGPU[:, :], stream=stream)
-        k_means.k_means_classify(dev_data, dev_result, 5, 20)
+        stream.synchronize()
+        k_means.k_means_classify[1, 1024, stream](dev_data, dev_result, y_size, 5, 20)
+        stream.synchronize()
         start = time.time()
         dev_result.copy_to_host(result, stream=stream)
+        stream.synchronize()
         print "Transfer result to host in " + str(time.time() - start) + " Seconds"
-        print result[50, 50]
+        for i in range(1300):
+            print result[i, 0]
 
     def loadGPU(self):
         global band1
