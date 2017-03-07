@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1117</width>
-    <height>764</height>
+    <height>920</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -171,12 +171,26 @@
      <string>K-Means</string>
     </property>
    </widget>
+   <widget class="QLabel" name="preview">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>70</y>
+      <width>861</width>
+      <height>801</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>open_image_button</zorder>
    <zorder>file_path</zorder>
    <zorder>label</zorder>
    <zorder>load_gpu_button</zorder>
    <zorder>k_means_button</zorder>
+   <zorder>preview</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
