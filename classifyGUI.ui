@@ -91,6 +91,9 @@
        <property name="text">
         <string>B2</string>
        </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -223,7 +226,6 @@
    <zorder>load_gpu_button</zorder>
    <zorder>k_means_button</zorder>
    <zorder>scrollArea</zorder>
-   <zorder>preview</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

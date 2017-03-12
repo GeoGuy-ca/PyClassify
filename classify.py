@@ -64,7 +64,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global x_size
         global y_size
         global filePath
-        filePath = '/home/mmclean/LC80490222016230LGN00/LC80490222016230LGN00_B1.TIF'
+        #filePath = '/home/mmclean/LC80490222016230LGN00/LC80490222016230LGN00_B1.TIF'
+        filePath = 'C:\Users\matth\Downloads\LC80490222016230LGN00.tar\LC80490222016230LGN00\LC80490222016230LGN00_B1.TIF'
         if filePath[-28:-25] == 'LC8':
             platform = Sensor.LANDSAT_8
             data_set = gdal.Open(str(filePath[:-6] + 'B1.TIF'), GA_ReadOnly)
@@ -136,9 +137,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
             band10 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
             data_set = gdal.Open(str(filePath[:-6] + 'B11.TIF'), GA_ReadOnly)
             band11 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            print band1[2000, 2500]
         else:
-            print 'only LC8 currently supported!'
+            data_set = gdal.Open(str(filePath), GA_ReadOnly)
+            band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+            band2 = np.array(data_set.GetRasterBand(2).ReadAsArray(), dtype=np.uint16)
+            band3 = np.array(data_set.GetRasterBand(3).ReadAsArray(), dtype=np.uint16)
         self.file_path.setText(filePath)
 
 
@@ -154,18 +157,16 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global x_size
         global y_size
         num_clust = 5
-        max_iteration = 20
-        print x_size
-        print y_size
+        max_iteration = 5
         clusters = np.sort(np.ndarray([num_clust+1, preGPU.shape[2]], dtype=np.uint16)) #Nuber of clusters by number of bands
         for i in range(1, num_clust + 1):
-            x = random.randint(0, x_size - 1)
-            y = random.randint(0, y_size - 1)
-            clusters[i, :] = preGPU[x, y, :]
+            x = random.randint(0, preGPU.shape[1] - 1)
+            y = random.randint(0, preGPU.shape[0] - 1)
+            clusters[i, :] = preGPU[y, x, :]
             while clusters[i, 0] == 0:
-                x = random.randint(0, x_size-1)
-                y = random.randint(0, y_size-1)
-                clusters[i, :] = preGPU[x, y, :]
+                x = random.randint(0, preGPU.shape[1] - 1)
+                y = random.randint(0, preGPU.shape[0] - 1)
+                clusters[i, :] = preGPU[y, x, :]
 
         dev_clusters = cuda.to_device(clusters, stream=stream)
         result = np.ndarray([x_size, y_size], dtype=np.uint8)
@@ -173,11 +174,15 @@ class MyApp(QMainWindow, Ui_MainWindow):
 
         dev_data = cuda.to_device(preGPU, stream=stream)
         stream.synchronize()
+        print clusters
         start = time.time()
-        k_means.k_means_classify[(x_size*y_size)/1024+1, 1024, stream](dev_data, dev_result, y_size, dev_clusters, num_clust, preGPU.shape[2], max_iteration)
+        k_means.k_means_classify(dev_data, dev_result, x_size, y_size, dev_clusters, num_clust, preGPU.shape[2], max_iteration, stream)
+
         stream.synchronize()
         print "K-Means: " + str(time.time() - start) + " Seconds"
         start = time.time()
+        dev_clusters.copy_to_host(clusters, stream=stream)
+        print clusters
         dev_result.copy_to_host(result, stream=stream)
         stream.synchronize()
         print "Transfer result to host in " + str(time.time() - start) + " Seconds"
@@ -189,12 +194,13 @@ class MyApp(QMainWindow, Ui_MainWindow):
             pixmap.fill(3)
         except:
             print "Pixmap not Def"
-        pixmap = QImage(result, x_size, y_size, y_size, QImage.Format_Indexed8)
+        pixmap = QImage(result, x_size, 8000, y_size, QImage.Format_Indexed8)
         pixmap.setColor(0, qRgb(0, 0, 0))
-        pixmap.setColor(1, qRgb(57, 255, 139))
-        pixmap.setColor(2, qRgb(57, 16, 13))
-        pixmap.setColor(3, qRgb(252, 216, 213))
-        pixmap.setColor(4, qRgb(152, 116, 113))
+        pixmap.setColor(1, qRgb(255, 0, 0))
+        pixmap.setColor(2, qRgb(0, 255, 0))
+        pixmap.setColor(3, qRgb(0, 0, 255))
+        pixmap.setColor(4, qRgb(0, 255, 255))
+        pixmap.setColor(5, qRgb(255, 255, 255))
         self.preview.setPixmap(QPixmap.fromImage(pixmap))
 
 
