@@ -90,7 +90,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
             band11 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
             print band1[2000, 2500]
         else:
-            print 'only LC8 currently supported!'
+            data_set = gdal.Open(str(filePath), GA_ReadOnly)
+            band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+            band2 = np.array(data_set.GetRasterBand(2).ReadAsArray(), dtype=np.uint16)
+            band3 = np.array(data_set.GetRasterBand(3).ReadAsArray(), dtype=np.uint16)
         self.file_path.setText(filePath)
 
 
@@ -140,8 +143,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         else:
             data_set = gdal.Open(str(filePath), GA_ReadOnly)
             band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            band2 = np.array(data_set.GetRasterBand(2).ReadAsArray(), dtype=np.uint16)
-            band3 = np.array(data_set.GetRasterBand(3).ReadAsArray(), dtype=np.uint16)
+            #band2 = np.array(data_set.GetRasterBand(2).ReadAsArray(), dtype=np.uint16)
+            #band3 = np.array(data_set.GetRasterBand(3).ReadAsArray(), dtype=np.uint16)
         self.file_path.setText(filePath)
 
 
@@ -156,9 +159,9 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global preGPU
         global x_size
         global y_size
-        num_clust = 5
+        num_clust = 10
         max_iteration = 5
-        clusters = np.sort(np.ndarray([num_clust+1, preGPU.shape[2]], dtype=np.uint16)) #Nuber of clusters by number of bands
+        clusters = np.ndarray([num_clust+1, preGPU.shape[2]], dtype=np.uint16) #Nuber of clusters by number of bands
         for i in range(1, num_clust + 1):
             x = random.randint(0, preGPU.shape[1] - 1)
             y = random.randint(0, preGPU.shape[0] - 1)
@@ -194,13 +197,19 @@ class MyApp(QMainWindow, Ui_MainWindow):
             pixmap.fill(3)
         except:
             print "Pixmap not Def"
-        pixmap = QImage(result, x_size, 8000, y_size, QImage.Format_Indexed8)
+
+        pixmap = QImage(result, x_size, min(8000, y_size), y_size, QImage.Format_Indexed8)
         pixmap.setColor(0, qRgb(0, 0, 0))
         pixmap.setColor(1, qRgb(255, 0, 0))
         pixmap.setColor(2, qRgb(0, 255, 0))
         pixmap.setColor(3, qRgb(0, 0, 255))
         pixmap.setColor(4, qRgb(0, 255, 255))
         pixmap.setColor(5, qRgb(255, 255, 255))
+        pixmap.setColor(6, qRgb(255, 0, 0))
+        pixmap.setColor(7, qRgb(255, 255, 0))
+        pixmap.setColor(8, qRgb(255, 0, 255))
+        pixmap.setColor(9, qRgb(0, 128, 128))
+        pixmap.setColor(10, qRgb(128, 128, 128))
         self.preview.setPixmap(QPixmap.fromImage(pixmap))
 
 

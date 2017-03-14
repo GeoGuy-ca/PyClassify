@@ -195,7 +195,7 @@
     <property name="widgetResizable">
      <bool>false</bool>
     </property>
-    <widget class="QWidget" name="scrollAreaWidgetContents_2">
+    <widget class="QWidget" name="image_area">
      <property name="geometry">
       <rect>
        <x>0</x>
