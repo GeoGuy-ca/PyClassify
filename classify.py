@@ -47,6 +47,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.open_image_button.clicked.connect(self.openfile)
         self.load_gpu_button.clicked.connect(self.loadGPU)
         self.k_means_button.clicked.connect(self.k_means)
+        self.k_means_button_cpu.clicked.connect(self.k_means_seq)
 
     def openfilestart(self):
         global band1
@@ -64,8 +65,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global x_size
         global y_size
         global filePath
-        #filePath = '/home/mmclean/LC80490222016230LGN00/LC80490222016230LGN00_B1.TIF'
-        filePath = 'C:\Users\matth\Downloads\LC80490222016230LGN00.tar\LC80490222016230LGN00\LC80490222016230LGN00_B1.TIF'
+        filePath = '/home/mmclean/LC80490222016230LGN00/LC80490222016230LGN00_B1.TIF'
+        #filePath = 'C:\Users\matth\Downloads\LC80490222016230LGN00.tar\LC80490222016230LGN00\LC80490222016230LGN00_B1.TIF'
         if filePath[-28:-25] == 'LC8':
             platform = Sensor.LANDSAT_8
             data_set = gdal.Open(str(filePath[:-6] + 'B1.TIF'), GA_ReadOnly)
@@ -152,6 +153,29 @@ class MyApp(QMainWindow, Ui_MainWindow):
         y_size = int(data_set.RasterYSize)
         x_size = int(data_set.RasterXSize)
 
+
+    def k_means_seq(self):
+        global result
+        global stream
+        global preGPU
+        global x_size
+        global y_size
+        num_clust = int(self.classes.text())
+        max_iteration = int(self.itterations.text())
+        clusters = np.ndarray([num_clust + 1, preGPU.shape[2]], dtype=np.uint16)  # Nuber of clusters by number of bands
+        for i in range(1, num_clust + 1):
+            x = random.randint(0, preGPU.shape[1] - 1)
+            y = random.randint(0, preGPU.shape[0] - 1)
+            clusters[i, :] = preGPU[y, x, :]
+            while clusters[i, 0] == 0:
+                x = random.randint(0, preGPU.shape[1] - 1)
+                y = random.randint(0, preGPU.shape[0] - 1)
+                clusters[i, :] = preGPU[y, x, :]
+        result = np.ndarray([x_size, y_size], dtype=np.uint8)
+        start = time.time()
+        k_means.k_means_classify_seq(preGPU, result, x_size, y_size, clusters, num_clust, preGPU.shape[2], max_iteration)
+        print "K-Means GPU: " + str(time.time() - start) + " Seconds"
+
     def k_means(self):
         global dev_data
         global result
@@ -159,8 +183,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global preGPU
         global x_size
         global y_size
-        num_clust = 10
-        max_iteration = 5
+        num_clust = int(self.classes.text())
+        max_iteration = int(self.itterations.text())
         clusters = np.ndarray([num_clust+1, preGPU.shape[2]], dtype=np.uint16) #Nuber of clusters by number of bands
         for i in range(1, num_clust + 1):
             x = random.randint(0, preGPU.shape[1] - 1)
@@ -177,15 +201,15 @@ class MyApp(QMainWindow, Ui_MainWindow):
 
         dev_data = cuda.to_device(preGPU, stream=stream)
         stream.synchronize()
-        print clusters
+        #print clusters
         start = time.time()
         k_means.k_means_classify(dev_data, dev_result, x_size, y_size, dev_clusters, num_clust, preGPU.shape[2], max_iteration, stream)
 
         stream.synchronize()
-        print "K-Means: " + str(time.time() - start) + " Seconds"
+        print "K-Means GPU: " + str(time.time() - start) + " Seconds"
         start = time.time()
         dev_clusters.copy_to_host(clusters, stream=stream)
-        print clusters
+        #print clusters
         dev_result.copy_to_host(result, stream=stream)
         stream.synchronize()
         print "Transfer result to host in " + str(time.time() - start) + " Seconds"
@@ -199,17 +223,21 @@ class MyApp(QMainWindow, Ui_MainWindow):
             print "Pixmap not Def"
 
         pixmap = QImage(result, x_size, min(8000, y_size), y_size, QImage.Format_Indexed8)
-        pixmap.setColor(0, qRgb(0, 0, 0))
-        pixmap.setColor(1, qRgb(255, 0, 0))
-        pixmap.setColor(2, qRgb(0, 255, 0))
-        pixmap.setColor(3, qRgb(0, 0, 255))
-        pixmap.setColor(4, qRgb(0, 255, 255))
-        pixmap.setColor(5, qRgb(255, 255, 255))
-        pixmap.setColor(6, qRgb(255, 0, 0))
-        pixmap.setColor(7, qRgb(255, 255, 0))
-        pixmap.setColor(8, qRgb(255, 0, 255))
-        pixmap.setColor(9, qRgb(0, 128, 128))
-        pixmap.setColor(10, qRgb(128, 128, 128))
+        colormap = []
+
+        for i in range(0, num_clust):
+            colormap.append(qRgb((200*i) % 255, (120*i) % 255, (30*i) % 255))
+        pixmap.setColorTable(colormap)
+        # pixmap.setColor(1, qRgb(255, 0, 0))
+        # pixmap.setColor(2, qRgb(0, 255, 0))
+        # pixmap.setColor(3, qRgb(0, 0, 255))
+        # pixmap.setColor(4, qRgb(0, 255, 255))
+        # pixmap.setColor(5, qRgb(255, 255, 255))
+        # pixmap.setColor(6, qRgb(255, 0, 0))
+        # pixmap.setColor(7, qRgb(255, 255, 0))
+        # pixmap.setColor(8, qRgb(255, 0, 255))
+        # pixmap.setColor(9, qRgb(0, 128, 128))
+        # pixmap.setColor(10, qRgb(128, 128, 128))
         self.preview.setPixmap(QPixmap.fromImage(pixmap))
 
 

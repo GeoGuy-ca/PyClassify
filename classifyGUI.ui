@@ -168,13 +168,13 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>390</y>
+      <y>490</y>
       <width>91</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>K-Means</string>
+     <string>K-Means GPU</string>
     </property>
    </widget>
    <widget class="QScrollArea" name="scrollArea">
@@ -219,6 +219,77 @@
      </widget>
     </widget>
    </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>390</y>
+      <width>58</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Classes:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>440</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Itterations:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="k_means_button_cpu">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>520</y>
+      <width>89</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>K-Means CPU</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="classes">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>410</y>
+      <width>91</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhDigitsOnly</set>
+    </property>
+    <property name="text">
+     <string>16</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="itterations">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>460</y>
+      <width>91</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhDigitsOnly</set>
+    </property>
+    <property name="text">
+     <string>16</string>
+    </property>
+   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>open_image_button</zorder>
    <zorder>file_path</zorder>
@@ -226,6 +297,11 @@
    <zorder>load_gpu_button</zorder>
    <zorder>k_means_button</zorder>
    <zorder>scrollArea</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_3</zorder>
+   <zorder>k_means_button_cpu</zorder>
+   <zorder>classes</zorder>
+   <zorder>itterations</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
