@@ -7,20 +7,20 @@ import numpy as np
 def k_means_classify_seq(image, result, width, height, clusters, num_clusts, bands, itterations):
     k_means_group_seq(image, result, width, height, clusters, num_clusts, bands)
     for i in range(itterations - 1):
-        k_means_cluster_seq(image, result, width, clusters, num_clusts, bands)
+        k_means_cluster_seq(image, result, width, height, clusters, num_clusts, bands)
         k_means_group_seq(image, result, width, height, clusters, num_clusts, bands)
 
-def k_means_cluster_seq(image, result, width, clusters, num_clusts, bands):
-    new_clusters = np. np.ndarray([num_clust + 1, preGPU.shape[2]+1], dtype=np.uint16)
-    for x in range(10):
+def k_means_cluster_seq(image, result, width, height, clusters, num_clusts, bands):
+    new_clusters = np.ndarray([num_clusts + 1, image.shape[2]+1], dtype=np.uint64)
+    for x in range(height):
         for y in range(width):
             for band in range(bands):
-                new_clusters[result[x, y], band] += image[x, y, band]
-            new_clusters[result[x, y], bands] += 1
+                new_clusters[result[y, x], band] += image[x, y, band]
+            new_clusters[result[y, x], bands] += 1
 
     for cluster in range(1, num_clusts + 1):
         for band in range(bands):
-            clusters[cluster, band] = int(host_clusters[cluster, band] / host_clusters[cluster, bands])
+            clusters[cluster, band] = int(new_clusters[cluster, band] / new_clusters[cluster, bands])
 
 
 def k_means_group_seq(image, result, width, height, clusters, num_clusts, bands):
@@ -32,20 +32,20 @@ def k_means_group_seq(image, result, width, height, clusters, num_clusts, bands)
             if datacheck != 0:
                 dist = 0
                 for band in range(bands):
-                    dist += (image[x, y, band] - clusters[1, band]) ** 2
+                    dist += np.subtract(image[x, y, band], clusters[1, band], dtype=np.int64) ** 2
                 min_dist = dist
-                result[x, y] = 1
+                result[y, x] = 1
                 for cluster in range(1, num_clusts + 1):
                     dist = 0
                     for band in range(bands):
-                        dist += (image[x, y, band] - clusters[cluster, band]) ** 2
+                        dist += np.subtract(image[x, y, band], clusters[1, band], dtype=np.int64) ** 2
                     if dist < min_dist:
                         min_dist = dist
-                        result[x, y] = cluster
+                        result[y, x] = cluster
 
                         # dev_result[x, y] = 1
             else:
-                result[x, y] = 0
+                result[y, x] = 0
 
 
 

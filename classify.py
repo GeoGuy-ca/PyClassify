@@ -65,8 +65,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global x_size
         global y_size
         global filePath
-        filePath = '/home/mmclean/LC80490222016230LGN00/LC80490222016230LGN00_B1.TIF'
-        #filePath = 'C:\Users\matth\Downloads\LC80490222016230LGN00.tar\LC80490222016230LGN00\LC80490222016230LGN00_B1.TIF'
+        #filePath = '/home/mmclean/LC80490222016230LGN00/LC80490222016230LGN00_B1.TIF'
+        filePath = 'C:\Users\matth\Downloads\LC80490222016230LGN00.tar\LC80490222016230LGN00\LC80490222016230LGN00_B1.TIF'
         if filePath[-28:-25] == 'LC8':
             platform = Sensor.LANDSAT_8
             data_set = gdal.Open(str(filePath[:-6] + 'B1.TIF'), GA_ReadOnly)
@@ -144,8 +144,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         else:
             data_set = gdal.Open(str(filePath), GA_ReadOnly)
             band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            #band2 = np.array(data_set.GetRasterBand(2).ReadAsArray(), dtype=np.uint16)
-            #band3 = np.array(data_set.GetRasterBand(3).ReadAsArray(), dtype=np.uint16)
+            band2 = np.array(data_set.GetRasterBand(2).ReadAsArray(), dtype=np.uint16)
+            band3 = np.array(data_set.GetRasterBand(3).ReadAsArray(), dtype=np.uint16)
         self.file_path.setText(filePath)
 
 
@@ -174,7 +174,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         result = np.ndarray([x_size, y_size], dtype=np.uint8)
         start = time.time()
         k_means.k_means_classify_seq(preGPU, result, x_size, y_size, clusters, num_clust, preGPU.shape[2], max_iteration)
-        print "K-Means GPU: " + str(time.time() - start) + " Seconds"
+        print "K-Means CPU: " + str(time.time() - start) + " Seconds"
 
     def k_means(self):
         global dev_data
@@ -327,9 +327,9 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyApp()
     window.show()
-    window.openfilestart()
-    window.loadGPU()
-    window.k_means()
+    # window.openfilestart()
+    # window.loadGPU()
+    # window.k_means()
     print "Program Initialized"
     sys.exit(app.exec_())
 
