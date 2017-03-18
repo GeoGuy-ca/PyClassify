@@ -17,6 +17,7 @@ class Sensor:
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("classifyGUI.ui")
 filePath = None
+num_clust = None
 band1 = None
 band2 = None
 band3 = None
@@ -49,58 +50,58 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.k_means_button.clicked.connect(self.k_means)
         self.k_means_button_cpu.clicked.connect(self.k_means_seq)
 
-    def openfilestart(self):
-        global band1
-        global band2
-        global band3
-        global band4
-        global band5
-        global band6
-        global band7
-        global band8
-        global band9
-        global band10
-        global band11
-        global platform
-        global x_size
-        global y_size
-        global filePath
-        #filePath = '/home/mmclean/LC80490222016230LGN00/LC80490222016230LGN00_B1.TIF'
-        filePath = 'C:\Users\matth\Downloads\LC80490222016230LGN00.tar\LC80490222016230LGN00\LC80490222016230LGN00_B1.TIF'
-        if filePath[-28:-25] == 'LC8':
-            platform = Sensor.LANDSAT_8
-            data_set = gdal.Open(str(filePath[:-6] + 'B1.TIF'), GA_ReadOnly)
-            band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B2.TIF'), GA_ReadOnly)
-            band2 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B3.TIF'), GA_ReadOnly)
-            band3 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B4.TIF'), GA_ReadOnly)
-            band4 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B5.TIF'), GA_ReadOnly)
-            band5 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B6.TIF'), GA_ReadOnly)
-            band6 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B7.TIF'), GA_ReadOnly)
-            band7 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B9.TIF'), GA_ReadOnly)
-            band9 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B10.TIF'), GA_ReadOnly)
-            band10 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            data_set = gdal.Open(str(filePath[:-6] + 'B11.TIF'), GA_ReadOnly)
-            band11 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            print band1[2000, 2500]
-        else:
-            data_set = gdal.Open(str(filePath), GA_ReadOnly)
-            band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
-            band2 = np.array(data_set.GetRasterBand(2).ReadAsArray(), dtype=np.uint16)
-            band3 = np.array(data_set.GetRasterBand(3).ReadAsArray(), dtype=np.uint16)
-        self.file_path.setText(filePath)
-
-
-
-        y_size = int(data_set.RasterYSize)
-        x_size = int(data_set.RasterXSize)
+    # def openfilestart(self):
+    #     global band1
+    #     global band2
+    #     global band3
+    #     global band4
+    #     global band5
+    #     global band6
+    #     global band7
+    #     global band8
+    #     global band9
+    #     global band10
+    #     global band11
+    #     global platform
+    #     global x_size
+    #     global y_size
+    #     global filePath
+    #     #filePath = '/home/mmclean/LC80490222016230LGN00/LC80490222016230LGN00_B1.TIF'
+    #     filePath = 'C:\Users\matth\Downloads\LC80490222016230LGN00.tar\LC80490222016230LGN00\LC80490222016230LGN00_B1.TIF'
+    #     if filePath[-28:-25] == 'LC8':
+    #         platform = Sensor.LANDSAT_8
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B1.TIF'), GA_ReadOnly)
+    #         band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B2.TIF'), GA_ReadOnly)
+    #         band2 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B3.TIF'), GA_ReadOnly)
+    #         band3 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B4.TIF'), GA_ReadOnly)
+    #         band4 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B5.TIF'), GA_ReadOnly)
+    #         band5 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B6.TIF'), GA_ReadOnly)
+    #         band6 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B7.TIF'), GA_ReadOnly)
+    #         band7 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B9.TIF'), GA_ReadOnly)
+    #         band9 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B10.TIF'), GA_ReadOnly)
+    #         band10 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         data_set = gdal.Open(str(filePath[:-6] + 'B11.TIF'), GA_ReadOnly)
+    #         band11 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         print band1[2000, 2500]
+    #     else:
+    #         data_set = gdal.Open(str(filePath), GA_ReadOnly)
+    #         band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
+    #         band2 = np.array(data_set.GetRasterBand(2).ReadAsArray(), dtype=np.uint16)
+    #         band3 = np.array(data_set.GetRasterBand(3).ReadAsArray(), dtype=np.uint16)
+    #     self.file_path.setText(filePath)
+    #
+    #
+    #
+    #     y_size = int(data_set.RasterYSize)
+    #     x_size = int(data_set.RasterXSize)
 
     def openfile(self):
         global band1
@@ -119,7 +120,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global y_size
         global filePath
         filePath = QFileDialog.getOpenFileName()
-        if  filePath[-28:-25] == 'LC8':
+        if  filePath[-28:-25] == 'LC8' or filePath[-10:-7] =='LC8':
             platform = Sensor.LANDSAT_8
             data_set = gdal.Open(str(filePath[:-6] + 'B1.TIF'), GA_ReadOnly)
             band1 = np.array(data_set.GetRasterBand(1).ReadAsArray(), dtype=np.uint16)
@@ -160,6 +161,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global preGPU
         global x_size
         global y_size
+        global num_clust
         num_clust = int(self.classes.text())
         max_iteration = int(self.itterations.text())
         clusters = np.ndarray([num_clust + 1, preGPU.shape[2]], dtype=np.uint16)  # Nuber of clusters by number of bands
@@ -171,10 +173,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 x = random.randint(0, preGPU.shape[1] - 1)
                 y = random.randint(0, preGPU.shape[0] - 1)
                 clusters[i, :] = preGPU[y, x, :]
-        result = np.ndarray([x_size, y_size], dtype=np.uint8)
+        result = np.ndarray([y_size, x_size], dtype=np.uint8)
         start = time.time()
         k_means.k_means_classify_seq(preGPU, result, x_size, y_size, clusters, num_clust, preGPU.shape[2], max_iteration)
         print "K-Means CPU: " + str(time.time() - start) + " Seconds"
+        self.show_result()
 
     def k_means(self):
         global dev_data
@@ -183,6 +186,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         global preGPU
         global x_size
         global y_size
+        global num_clust
         num_clust = int(self.classes.text())
         max_iteration = int(self.itterations.text())
         clusters = np.ndarray([num_clust+1, preGPU.shape[2]], dtype=np.uint16) #Nuber of clusters by number of bands
@@ -196,8 +200,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 clusters[i, :] = preGPU[y, x, :]
 
         dev_clusters = cuda.to_device(clusters, stream=stream)
-        result = np.ndarray([x_size, y_size], dtype=np.uint8)
-        dev_result = cuda.device_array([x_size, y_size], dtype=np.uint8, stream=stream)
+        result = np.ndarray([y_size, x_size], dtype=np.uint8)
+        dev_result = cuda.device_array([y_size, x_size], dtype=np.uint8, stream=stream)
 
         dev_data = cuda.to_device(preGPU, stream=stream)
         stream.synchronize()
@@ -213,31 +217,21 @@ class MyApp(QMainWindow, Ui_MainWindow):
         dev_result.copy_to_host(result, stream=stream)
         stream.synchronize()
         print "Transfer result to host in " + str(time.time() - start) + " Seconds"
-        # for i in range(3000, 3010):
-        #     for j in range(3000, 3010):
-        #         print result[i, j]
-        test = np.empty([3, 3])
-        try:
-            pixmap.fill(3)
-        except:
-            print "Pixmap not Def"
+        self.show_result()
 
-        pixmap = QImage(result, x_size, min(8000, y_size), y_size, QImage.Format_Indexed8)
+    def show_result(self):
+        global result
+        global x_size
+        global y_size
+        global num_clust
+        pixmap = QImage(result, x_size, min(8000, y_size), x_size, QImage.Format_Indexed8)
         colormap = []
 
         for i in range(0, num_clust):
             colormap.append(qRgb((200*i) % 255, (120*i) % 255, (30*i) % 255))
         pixmap.setColorTable(colormap)
-        # pixmap.setColor(1, qRgb(255, 0, 0))
-        # pixmap.setColor(2, qRgb(0, 255, 0))
-        # pixmap.setColor(3, qRgb(0, 0, 255))
-        # pixmap.setColor(4, qRgb(0, 255, 255))
-        # pixmap.setColor(5, qRgb(255, 255, 255))
-        # pixmap.setColor(6, qRgb(255, 0, 0))
-        # pixmap.setColor(7, qRgb(255, 255, 0))
-        # pixmap.setColor(8, qRgb(255, 0, 255))
-        # pixmap.setColor(9, qRgb(0, 128, 128))
-        # pixmap.setColor(10, qRgb(128, 128, 128))
+        self.preview.resize(x_size, min(8000, y_size))
+        self.image_area.resize(x_size, min(8000, y_size))
         self.preview.setPixmap(QPixmap.fromImage(pixmap))
 
 
@@ -327,9 +321,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyApp()
     window.show()
-    # window.openfilestart()
-    # window.loadGPU()
-    # window.k_means()
     print "Program Initialized"
     sys.exit(app.exec_())
 
