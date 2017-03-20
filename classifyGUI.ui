@@ -56,7 +56,7 @@
    <widget class="QPushButton" name="load_gpu_button">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>360</y>
       <width>91</width>
       <height>23</height>
@@ -78,6 +78,9 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QCheckBox" name="select_B1">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B1</string>
        </property>
@@ -88,6 +91,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="select_B2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B2</string>
        </property>
@@ -98,13 +104,22 @@
      </item>
      <item>
       <widget class="QCheckBox" name="select_B3">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B3</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="select_B4">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B4</string>
        </property>
@@ -112,6 +127,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="select_B5">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B5</string>
        </property>
@@ -119,6 +137,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="select_B6">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B6</string>
        </property>
@@ -126,6 +147,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="select_B7">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B7</string>
        </property>
@@ -143,6 +167,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="select_B9">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B9</string>
        </property>
@@ -150,6 +177,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="select_B10">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B10</string>
        </property>
@@ -157,6 +187,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="select_B11">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>B11</string>
        </property>
@@ -168,9 +201,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>490</y>
-      <width>91</width>
-      <height>23</height>
+      <y>500</y>
+      <width>121</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -180,7 +213,7 @@
    <widget class="QScrollArea" name="scrollArea">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>120</x>
       <y>50</y>
       <width>1181</width>
       <height>871</height>
@@ -222,7 +255,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>390</y>
       <width>58</width>
       <height>15</height>
@@ -235,24 +268,61 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>440</y>
-      <width>71</width>
+      <width>81</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Itterations:</string>
+     <string>Max Itterations:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="k_means_button_cpu">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>520</y>
-      <width>89</width>
-      <height>27</height>
+      <y>560</y>
+      <width>121</width>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="palette">
+     <palette>
+      <active>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </active>
+      <inactive>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </inactive>
+      <disabled>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>120</red>
+          <green>120</green>
+          <blue>120</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </disabled>
+     </palette>
     </property>
     <property name="text">
      <string>K-Means CPU</string>
@@ -261,7 +331,7 @@
    <widget class="QLineEdit" name="classes">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>410</y>
       <width>91</width>
       <height>27</height>
@@ -277,7 +347,7 @@
    <widget class="QLineEdit" name="itterations">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>460</y>
       <width>91</width>
       <height>27</height>
@@ -288,6 +358,224 @@
     </property>
     <property name="text">
      <string>16</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="k_means_no_sqrt">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>530</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>K-Means GPU no SQRT</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="debug">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>870</y>
+      <width>111</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Run Max Iterations</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>650</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Minimum Movement:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="movement">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>670</y>
+      <width>91</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhDigitsOnly</set>
+    </property>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="fuzz_k_means_button_cpu">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>740</y>
+      <width>121</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="palette">
+     <palette>
+      <active>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </active>
+      <inactive>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </inactive>
+      <disabled>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>120</red>
+          <green>120</green>
+          <blue>120</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </disabled>
+     </palette>
+    </property>
+    <property name="text">
+     <string>Fuzzy K-Means CPU</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="fuzzy_k_means_button">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>710</y>
+      <width>121</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="palette">
+     <palette>
+      <active>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </active>
+      <inactive>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </inactive>
+      <disabled>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>120</red>
+          <green>120</green>
+          <blue>120</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </disabled>
+     </palette>
+    </property>
+    <property name="text">
+     <string>Fuzzy K-Means GPU</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="k_means_button_cpu_no_sqrt">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>590</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="palette">
+     <palette>
+      <active>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </active>
+      <inactive>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </inactive>
+      <disabled>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>120</red>
+          <green>120</green>
+          <blue>120</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </disabled>
+     </palette>
+    </property>
+    <property name="text">
+     <string>K-Means CPU no SQRT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="save_button">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>900</y>
+      <width>91</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save Image</string>
     </property>
    </widget>
    <zorder>layoutWidget</zorder>
@@ -302,6 +590,14 @@
    <zorder>k_means_button_cpu</zorder>
    <zorder>classes</zorder>
    <zorder>itterations</zorder>
+   <zorder>k_means_no_sqrt</zorder>
+   <zorder>debug</zorder>
+   <zorder>label_4</zorder>
+   <zorder>movement</zorder>
+   <zorder>fuzz_k_means_button_cpu</zorder>
+   <zorder>fuzzy_k_means_button</zorder>
+   <zorder>k_means_button_cpu_no_sqrt</zorder>
+   <zorder>save_button</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
