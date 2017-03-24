@@ -38,7 +38,7 @@ def k_means_cluster_seq(image, result, width, height, clusters, num_clusts, band
             for band in range(bands):
                 new_clusters[result[x, y], band] += image[x, y, band]
             new_clusters[result[x, y], bands] += 1
-    for cluster in range(1, num_clusts + 1):
+    for cluster in range(2, num_clusts + 1):
         if new_clusters[cluster, bands] > 0:
             for band in range(bands):
                 new_val = int(new_clusters[cluster, band] / new_clusters[cluster, bands])
@@ -55,19 +55,20 @@ def k_means_cluster_seq(image, result, width, height, clusters, num_clusts, band
 def k_means_group_seq(image, result, width, height, clusters, num_clusts, bands):
     for x in range(height):
         for y in range(width):
+            #This section of code makes sure pixel is not a no data pixel
             datacheck = 1
             for band in range(bands):
                 datacheck *= image[x, y, band]
-            if datacheck != 0:
-                dist = np.sqrt(sum(image[x, y, :] - clusters[1, band]))
-                min_dist = dist
-                result[x, y] = 1
-                for cluster in range(1, num_clusts + 1):
+            if datacheck != 0: #if pixel has data proceed
+                dist = np.sqrt(sum(image[x, y, :] - clusters[1, band])) #compute distance to cluster 1
+                min_dist = dist #set minimum distance to distance of cluster 1
+                result[x, y] = 1 #set pixels class to 1
+                for cluster in range(2, num_clusts + 1): #check remaining clusters
                     dist = np.sqrt(sum(image[x, y, :] - clusters[cluster, band]))
-                    if dist < min_dist:
+                    if dist < min_dist: #if current cluster is closer than previous custers, update pixels cluster
                         min_dist = dist
                         result[x, y] = cluster
-            else:
+            else: #if pixel had no data assign class 0 which will be ignored later
                 result[x, y] = 0
 
 
@@ -83,7 +84,7 @@ def k_means_group_seq_fuzzy(image, result, width, height, clusters, num_clusts, 
                 distance[x, y, num_clusts + 1] += distance[x, y, 0]
                 min_dist = distance[x, y, 0]
                 result[x, y] = 1
-                for cluster in range(1, num_clusts + 1):
+                for cluster in range(2, num_clusts + 1):
                     distance[x, y, cluster] = np.sqrt(sum(image[x, y, :] - clusters[cluster, band]))
                     distance[x, y, num_clusts + 1] += distance[x, y, cluster]
                     if distance[x, y, cluster] < min_dist:
@@ -128,7 +129,7 @@ def k_means_group_seq_no_root(image, result, width, height, clusters, num_clusts
                 dist = sum(image[x, y, :] - clusters[1, band])
                 min_dist = dist
                 result[x, y] = 1
-                for cluster in range(1, num_clusts + 1):
+                for cluster in range(2, num_clusts + 1):
                     dist = sum(image[x, y, :] - clusters[cluster, band])
                     if dist < min_dist:
                         min_dist = dist
@@ -218,7 +219,7 @@ def k_means_group(image, dev_result, width, height, clusters, num_clusts, bands)
             dist += (image[x, y, band] - clusters[1, band]) ** 2
         min_dist = math.sqrt(dist)
         dev_result[x, y] = 1
-        for cluster in range(1, num_clusts + 1):
+        for cluster in range(2, num_clusts + 1):
             dist = 0
             for band in range(bands):
                 dist += (image[x, y, band] - clusters[cluster, band]) ** 2
@@ -234,31 +235,29 @@ def k_means_group(image, dev_result, width, height, clusters, num_clusts, bands)
 
 @cuda.jit('void(uint16[:,:,:], uint8[:, :], int16, int16, uint16[:, :], int16, int16)', target='gpu')
 def k_means_group_no_root(image, dev_result, width, height, clusters, num_clusts, bands):
-    pix = cuda.grid(1)
+    pix = cuda.grid(1) #determin which pixel to work on based on thread and block id
     y = pix % width
     x = pix / width
 
-    #if x < height and y < width:
+    #section to see if pixel contains data
     datacheck = 1
     for band in range(bands):
         datacheck *= image[x, y, band]
-    if datacheck != 0:
+    if datacheck != 0: #if pixel contains data proceed
         dist = 0
-        for band in range(bands):
+        for band in range(bands): #determine euclidean distance of first cluster
             dist += (image[x, y, band] - clusters[1, band]) ** 2
-        min_dist = dist
-        dev_result[x, y] = 1
-        for cluster in range(1, num_clusts + 1):
+        min_dist = dist #set min ditance to distance of first cluster
+        dev_result[x, y] = 1 #set pixel to cluster 1
+        for cluster in range(2, num_clusts + 1): # check distance of rest of clusters
             dist = 0
             for band in range(bands):
                 dist += (image[x, y, band] - clusters[cluster, band]) ** 2
             dist = dist
-            if dist < min_dist:
+            if dist < min_dist: #if current cluster is closer than previous set, set pixel to this cluster
                 min_dist = dist
                 dev_result[x, y] = cluster
-
-        # dev_result[x, y] = 1
-    else:
+    else: #if no data set class to 0
         dev_result[x, y] = 0
 
 
@@ -346,7 +345,7 @@ def k_means_group_fuzzy(image, dev_result, width, height, clusters, num_clusts, 
         distance[x, y, num_clusts + 1] += distance[x, y, 0]
         min_dist = distance[x, y, 0]
         dev_result[x, y] = 1
-        for cluster in range(1, num_clusts + 1):
+        for cluster in range(2, num_clusts + 1):
             distance[x, y, cluster] = 0
             for band in range(bands):
                 distance[x, y, cluster] += (image[x, y, band] - clusters[cluster, band]) ** 2

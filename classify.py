@@ -9,7 +9,7 @@ import numpy as np
 import k_means
 import time
 import random
-import os
+
 
 class Sensor:
     LANDSAT_8 = 1
@@ -358,7 +358,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.image_area.resize(x_size, min(8000, y_size))
         self.preview.setPixmap(QPixmap.fromImage(pixmap))
 
-
+    #This method checks which band boxes are checked and stacks selected bands into a contiguous array and passes it to the GPU
+    #Note that the preGUP array is initalized ascontiguous, and np.uint16, DO NOT USE non numpy datatypes!!!!
     def loadGPU(self):
         global band1
         global band2
@@ -382,52 +383,52 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 preGPU = np.dstack((preGPU, band1))
         if self.select_B2.isChecked() and self.select_B2.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band2[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band2[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band2))
         if self.select_B3.isChecked() and self.select_B3.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band3[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band3[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band3))
         if self.select_B4.isChecked() and self.select_B4.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band4[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band4[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band4))
         if self.select_B5.isChecked()  and self.select_B5.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band5[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band5[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band5))
         if self.select_B6.isChecked() and self.select_B6.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band6[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band6[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band6))
         if self.select_B7.isChecked() and self.select_B7.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band7[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band7[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band7))
         if self.select_B8.isChecked() and self.select_B8.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band8[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band8[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band8))
         if self.select_B9.isChecked() and self.select_B9.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band9[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band9[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band9))
         if self.select_B10.isChecked() and self.select_B10.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band10[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band10[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band10))
         if self.select_B11.isChecked() and self.select_B11.isEnabled():
             if preGPU is None:
-                preGPU = np.ascontiguousarray(band11[:, :, np.newaxis], dtype=int)
+                preGPU = np.ascontiguousarray(band11[:, :, np.newaxis], dtype=np.uint16)
             else:
                 preGPU = np.dstack((preGPU, band11))
         if preGPU is not None:
